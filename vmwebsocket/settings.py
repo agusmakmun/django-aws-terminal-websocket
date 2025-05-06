@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -49,6 +50,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "terminal.otel_http_middleware.TraceparentHeaderMiddleware",
 ]
 
 ROOT_URLCONF = "vmwebsocket.urls"
@@ -123,3 +125,56 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Redis cache
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://localhost:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+}
+
+# Health check URL for Celery task
+HEALTH_CHECK_URL = "http://localhost:8000/health-check/"
+CELERY_BROKER_URL = "redis://localhost:6379/0"
+
+# Celery Beat schedule for periodic tasks
+CELERY_BEAT_SCHEDULE = {
+    "health-check-every-minute": {
+        "task": "terminal.tasks.health_check_task",
+        "schedule": 30,  # 30 seconds
+    },
+}
+
+# --- OpenTelemetry Instrumentation ---
+if os.getenv("ENABLE_OTEL", "0") == "1":
+    from opentelemetry.instrumentation.django import DjangoInstrumentor
+    from opentelemetry.sdk.resources import Resource
+    from opentelemetry.sdk.trace import TracerProvider
+    from opentelemetry.sdk.trace.export import BatchSpanProcessor
+    from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+    from opentelemetry import trace
+
+    resource = Resource.create(
+        {
+            "service.name": os.getenv("OTEL_SERVICE_NAME", "django-vm-websocket"),
+        }
+    )
+    provider = TracerProvider(resource=resource)
+    trace.set_tracer_provider(provider)
+    otlp_exporter = OTLPSpanExporter(
+        endpoint=os.getenv(
+            "OTEL_EXPORTER_OTLP_ENDPOINT", "http://localhost:4318/v1/traces"
+        ),
+    )
+    span_processor = BatchSpanProcessor(otlp_exporter)
+    provider.add_span_processor(span_processor)
+    DjangoInstrumentor().instrument()
+
+    # Set up Redis OpenTelemetry enhancements (span processor + cache patch)
+    from terminal.otel_redis import setup_redis_otel
+
+    setup_redis_otel(provider)

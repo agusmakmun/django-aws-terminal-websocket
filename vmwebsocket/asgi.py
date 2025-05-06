@@ -12,12 +12,13 @@ import os
 from channels.routing import ProtocolTypeRouter, URLRouter
 from django.core.asgi import get_asgi_application
 from terminal.routing import websocket_urlpatterns
+from terminal.otel_websocket_middleware import OpenTelemetryWebSocketMiddleware
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "vmwebsocket.settings")
 
 application = ProtocolTypeRouter(
     {
         "http": get_asgi_application(),
-        "websocket": URLRouter(websocket_urlpatterns),
+        "websocket": OpenTelemetryWebSocketMiddleware(URLRouter(websocket_urlpatterns)),
     }
 )

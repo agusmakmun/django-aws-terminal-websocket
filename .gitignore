@@ -43,4 +43,10 @@ htmlcov/
 # Other
 *.bak
 *.swp
-.idea/ 
+.idea/
+
+uvicorn.log
+celery-worker.log
+celery-beat.log
+celerybeat-schedule
+celerybeat-schedule.db

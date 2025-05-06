@@ -1,6 +1,15 @@
 django>=5.2
+celery>=5.0
 channels>=4.0
 boto3>=1.38
 asyncssh>=2.14
-daphne>=4.0
-uvicorn[standard]>=0.20 
+uvicorn[standard]>=0.20
+opentelemetry-api>=1.24.0
+opentelemetry-sdk>=1.24.0
+opentelemetry-instrumentation-django>=0.44b0
+opentelemetry-exporter-otlp>=1.24.0
+opentelemetry-instrumentation-redis==0.53b1
+opentelemetry-instrumentation-celery==0.53b1
+requests==2.32.3
+redis==6.0.0
+django-redis==5.4.0

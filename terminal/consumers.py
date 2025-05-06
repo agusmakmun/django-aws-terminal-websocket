@@ -4,6 +4,7 @@ import asyncio
 import asyncssh
 import logging
 import os
+from terminal.otel_tracing import traced_async_class
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +18,7 @@ KEY_PATH: str = os.path.join(os.path.dirname(__file__), "aws.pem")
 PORT: int = 22
 
 
+@traced_async_class
 class TerminalConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         logger.info(f"WebSocket connect: id={id(self)}")
