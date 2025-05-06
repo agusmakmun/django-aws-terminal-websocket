@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# OpenTelemetry environment variables
+export ENABLE_OTEL=1
+export OTEL_SERVICE_NAME="django-vm-websocket"  # or your preferred service name
+export OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4318/v1/traces"  # or your collector endpoint
+
 # Start Redis with Docker if not already running
 if [ "$(docker ps -q -f name=local-redis)" ]; then
   echo "Redis container 'local-redis' already running."
