@@ -24,20 +24,29 @@ django-vm-websocket/
 ├── manage.py
 ├── requirements.txt
 ├── run-local.sh
+├── README.md
 ├── vmwebsocket/
+│   ├── __init__.py
 │   ├── asgi.py
-│   ├── celery.py  # Celery app definition
+│   ├── celery.py
 │   ├── settings.py
 │   ├── urls.py
-│   └── ...
+│   └── wsgi.py
 ├── terminal/
+│   ├── __init__.py
+│   ├── apps.py
 │   ├── consumers.py
+│   ├── otel_http_middleware.py
+│   ├── otel_redis.py
+│   ├── otel_tracing.py
+│   ├── otel_websocket_middleware.py
 │   ├── routing.py
 │   ├── tasks.py
 │   ├── views.py
-│   ├── otel_tracing.py
-│   └── templates/terminal/terminal.html
-└── ...
+│   └── templates/
+│       └── terminal/
+│           └── terminal.html
+└── db.sqlite3
 ```
 
 ## Setup Instructions
