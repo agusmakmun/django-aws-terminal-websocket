@@ -15,6 +15,8 @@ This project is a Django-based web application that provides a browser-based ter
 
 <img width="1054" alt="image" src="https://github.com/user-attachments/assets/91475790-be87-4f70-b87a-386d41d2829a" />
 
+![image](https://github.com/user-attachments/assets/bb825cc3-f992-4d79-a29e-a96390ca32e1)
+
 
 ## Project Structure
 ```
