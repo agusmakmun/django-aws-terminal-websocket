@@ -8,6 +8,11 @@ This project is a Django-based web application that provides a browser-based ter
 - **xterm.js Frontend**: Presents a fully interactive terminal in the browser using xterm.js.
 - **Simple Django Template**: Uses a minimal HTML template for easy customization.
 
+### Preview
+
+<img width="1054" alt="image" src="https://github.com/user-attachments/assets/91475790-be87-4f70-b87a-386d41d2829a" />
+
+
 ## Project Structure
 ```
 django-vm-websocket/
