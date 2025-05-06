@@ -1,6 +1,6 @@
 # Django EC2 WebSocket Terminal
 
-This project is a Django-based web application that provides a browser-based terminal interface using WebSockets and [xterm.js](https://xtermjs.org/). It is designed to stream terminal sessions (e.g., from an EC2 instance) to the frontend in real time.
+This project is a Django + Channels web application that delivers a real-time, browser-based terminal using WebSockets and [xterm.js](https://xtermjs.org/). It streams interactive shell sessions—such as SSH to an EC2 instance—directly to the frontend, with full OpenTelemetry observability for HTTP, WebSocket, Celery, and Redis operations.
 
 ## Features
 - **Django + Channels**: Uses Django Channels for WebSocket support.
