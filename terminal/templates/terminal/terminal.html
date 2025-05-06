@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EC2 Terminal WebSocket</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm/css/xterm.css" />
+    <style>
+        body { background: #222; color: #fff; }
+        #terminal { width: 100vw; height: 90vh; margin: 0 auto; }
+    </style>
+</head>
+<body>
+    <h2 style="text-align:center;">EC2 Terminal WebSocket</h2>
+    <div id="terminal"></div>
+    <script src="https://cdn.jsdelivr.net/npm/xterm/lib/xterm.js"></script>
+    <script>
+        const term = new Terminal({
+            cursorBlink: true,
+            convertEol: false,
+            fontFamily: 'monospace',
+            fontSize: 14,
+            theme: {
+                background: '#222',
+                foreground: '#fff'
+            }
+        });
+        term.open(document.getElementById('terminal'));
+        const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
+        const ws_path = `${ws_scheme}://${window.location.host}/ws/terminal/`;
+        const socket = new WebSocket(ws_path);
+        socket.binaryType = "arraybuffer";
+
+        socket.onopen = function() {
+            term.writeln('Connected to WebSocket.');
+        };
+        socket.onmessage = function(event) {
+            let data;
+            if (event.data instanceof ArrayBuffer) {
+                data = new TextDecoder().decode(event.data);
+            } else {
+                try {
+                    data = JSON.parse(event.data).message;
+                } catch {
+                    data = event.data;
+                }
+            }
+            if (data) {
+                term.write(data);
+            }
+        };
+        term.onData(function(data) {
+            socket.send(new TextEncoder().encode(data));
+        });
+    </script>
+</body>
+</html> 

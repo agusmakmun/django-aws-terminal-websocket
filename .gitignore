@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Django
+*.sqlite3
+*.log
+
+# Environments
+.env
+venv/
+env/
+.env.*
+../env-vm-performance/
+
+# VSCode
+.vscode/
+
+# MacOS
+.DS_Store
+
+# AWS credentials
+terminal/aws.pem
+
+# Migrations
+*/migrations/__pycache__/
+*/migrations/*.pyc
+*/migrations/*.pyo
+
+# Byte-compiled / optimized / DLL files
+*.so
+
+# Static files
+staticfiles/
+
+# Coverage reports
+htmlcov/
+.coverage
+
+# Other
+*.bak
+*.swp
+.idea/ 
