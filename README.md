@@ -147,16 +147,29 @@ To enable the backend to connect to your AWS EC2 instance via SSH, set the follo
 - **Backend**: Extend `TerminalConsumer` to handle authentication, EC2 connection, and streaming.
 
 ## Requirements
-- Python 3.8+
-- Django 5.2+
-- channels 4.0+
+
+The following Python packages are required for full functionality:
+
+- django>=5.2
 - celery>=5.0
-- boto3 1.38+
+- channels>=4.0
+- boto3>=1.38
 - asyncssh>=2.14
 - uvicorn[standard]>=0.20
-- requests
-- redis (for Celery broker and cache)
-- opentelemetry-api, opentelemetry-sdk, opentelemetry-instrumentation-django, opentelemetry-instrumentation-celery, opentelemetry-instrumentation-redis, opentelemetry-exporter-otlp
+- opentelemetry-api>=1.24.0
+- opentelemetry-sdk>=1.24.0
+- opentelemetry-instrumentation-django>=0.44b0
+- opentelemetry-exporter-otlp>=1.24.0
+- opentelemetry-instrumentation-redis==0.53b1
+- opentelemetry-instrumentation-celery==0.53b1
+- requests==2.32.3
+- redis==6.0.0
+- django-redis==5.4.0
+
+Install all dependencies with:
+```bash
+pip install -r requirements.txt
+```
 
 ## License
 MIT or your preferred license.
