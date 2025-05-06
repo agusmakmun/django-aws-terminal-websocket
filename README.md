@@ -11,6 +11,11 @@ This project is a Django-based web application that provides a browser-based ter
 - **Distributed Tracing**: OpenTelemetry spans for HTTP, WebSocket, Celery, and Redis operations.
 - **Automatic Local Setup**: `run-local.sh` starts Uvicorn, Celery worker, Celery beat, and Redis (via Docker) with logs saved to `.log` files.
 
+### Preview
+
+<img width="1054" alt="image" src="https://github.com/user-attachments/assets/91475790-be87-4f70-b87a-386d41d2829a" />
+
+
 ## Project Structure
 ```
 django-vm-websocket/
