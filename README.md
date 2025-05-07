@@ -5,12 +5,12 @@ This project is a Django + Channels web application that provides a real-time, b
 ## Table of Contents
 - [Features](#features-%EF%B8%8F)
 - [Project Structure](#project-structure-%EF%B8%8F)
+- [Requirements](#requirements-%EF%B8%8F)
 - [Setup Instructions](#setup-instructions-%EF%B8%8F)
 - [WebSocket & EC2 Streaming](#websocket--ec2-streaming-%EF%B8%8F)
 - [EC2 SSH Configuration](#ec2-ssh-configuration-%EF%B8%8F)
 - [Health Check API and Periodic Task](#health-check-api-and-periodic-task-%EF%B8%8F)
 - [Customization](#customization-%EF%B8%8F)
-- [Requirements](#requirements-%EF%B8%8F)
 - [Running with ASGI Servers](#running-with-asgi-servers-%EF%B8%8F)
 - [OpenTelemetry Tracing](#opentelemetry-tracing-%EF%B8%8F)
 - [Troubleshooting OpenTelemetry Collector Connection](#troubleshooting-opentelemetry-collector-connection-%EF%B8%8F)
@@ -80,6 +80,31 @@ django-vm-websocket/
 #   - redis (cache & broker)
 #   - jaeger (tracing backend & UI)
 #   - grafana (service performance monitoring UI)
+```
+
+## Requirements [⬆️](#table-of-contents)
+
+The following Python packages are required for full functionality:
+
+- django>=5.2
+- celery>=5.0
+- channels>=4.0
+- boto3>=1.38
+- asyncssh>=2.14
+- uvicorn[standard]>=0.20
+- opentelemetry-api>=1.24.0
+- opentelemetry-sdk>=1.24.0
+- opentelemetry-instrumentation-django>=0.44b0
+- opentelemetry-exporter-otlp>=1.24.0
+- opentelemetry-instrumentation-redis==0.53b1
+- opentelemetry-instrumentation-celery==0.53b1
+- requests==2.32.3
+- redis==6.0.0
+- django-redis==5.4.0
+
+Install all dependencies with:
+```bash
+pip install -r requirements.txt
 ```
 
 ## Setup Instructions [⬆️](#table-of-contents)
@@ -181,31 +206,6 @@ To enable the backend to connect to your AWS EC2 instance via SSH, set the follo
 ## Customization [⬆️](#table-of-contents)
 - **Frontend**: Edit `terminal/templates/terminal/terminal.html` to customize the look or add features.
 - **Backend**: Extend `TerminalConsumer` to handle authentication, EC2 connection, and streaming.
-
-## Requirements [⬆️](#table-of-contents)
-
-The following Python packages are required for full functionality:
-
-- django>=5.2
-- celery>=5.0
-- channels>=4.0
-- boto3>=1.38
-- asyncssh>=2.14
-- uvicorn[standard]>=0.20
-- opentelemetry-api>=1.24.0
-- opentelemetry-sdk>=1.24.0
-- opentelemetry-instrumentation-django>=0.44b0
-- opentelemetry-exporter-otlp>=1.24.0
-- opentelemetry-instrumentation-redis==0.53b1
-- opentelemetry-instrumentation-celery==0.53b1
-- requests==2.32.3
-- redis==6.0.0
-- django-redis==5.4.0
-
-Install all dependencies with:
-```bash
-pip install -r requirements.txt
-```
 
 ## Running with ASGI Servers [⬆️](#table-of-contents)
 
