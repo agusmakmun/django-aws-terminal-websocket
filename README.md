@@ -23,7 +23,8 @@ This project is a Django + Channels web application that provides a real-time, b
 
 ![Jaeger UI 2](https://github.com/user-attachments/assets/9a622a6e-fdb1-4b21-9d73-ee11a67ccfcf)
 
-![grafana monitoring](https://github.com/user-attachments/assets/4834aa1d-5ee4-4fc6-9e0b-43c82f87485f)
+![grafana monitoring](https://github.com/user-attachments/assets/7f0f7e1c-1df1-41f5-bde6-1065900b60c2)
+
 
 ## Project Structure
 ```
