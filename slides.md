@@ -227,6 +227,49 @@ notes: |
 
 ---
 
+## Redacting Sensitive Data with the OpenTelemetry Collector
+
+&nbsp;
+
+- As your business scales, telemetry data may include sensitive information (e.g., credit card numbers, emails, secrets).
+- The OpenTelemetry Collector provides processors to redact or mask sensitive data before exporting:
+  - **Attributes processor**: Update, delete, or hash specific attributes (e.g., remove `user.email`, hash `client.ip_address`).
+  - **Redaction processor**: Allowlist permitted attributes, mask values matching patterns (e.g., credit card numbers).
+  - **Transform processor**: Use OTTL to redact, replace, or hash sensitive data in spans, logs, or metrics.
+- Example: Remove or mask sensitive fields in traces before they leave your environment.
+- Best practice: Filter sensitive data as early as possible in your observability pipeline.
+
+<!--
+notes: |
+  - Explain why redacting sensitive data is important for compliance (GDPR, HIPAA, PCI DSS).
+  - Show that OpenTelemetry Collector can delete, mask, or hash sensitive fields using processors.
+  - Mention that you can use allowlists, regex patterns, and OTTL for advanced redaction.
+  - Reference the Better Stack guide for detailed configuration examples.
+-->
+
+---
+
+### Example of Attributes processor
+
+```yaml
+processors:
+  attributes/update:
+    actions:
+      - key: payment.card_number
+        action: delete
+      - key: user.email
+        action: delete
+      - key: app_secret
+        value: [REDACTED]
+        action: update
+      - key: client.ip_address
+        action: hash
+```
+
+[Read the full guide @ Better Stack](https://betterstack.com/community/guides/observability/redacting-sensitive-data-opentelemetry/)
+
+---
+
 ## Zero Effort, Maximum Insight
 
 - No more scattered logs
