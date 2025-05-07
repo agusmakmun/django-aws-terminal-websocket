@@ -17,6 +17,7 @@ This project is a Django + Channels web application that provides a real-time, b
 - [Class-Level Tracing with OpenTelemetry](#class-level-tracing-with-opentelemetry-%EF%B8%8F)
 - [Redis OpenTelemetry Tracing (Advanced)](#redis-opentelemetry-tracing-advanced-%EF%B8%8F)
 - [Service Performance Monitoring with Grafana](#service-performance-monitoring-with-grafana-%EF%B8%8F)
+- [Redacting Sensitive Data with the OpenTelemetry Collector](#redacting-sensitive-data-with-the-opentelemetry-collector-%EF%B8%8F)
 - [📽️ Running the Slidev Presentation](#️-running-the-slidev-presentation-%EF%B8%8F)
 - [License](#license-%EF%B8%8F)
 
@@ -353,6 +354,34 @@ Grafana is included in the Docker Compose setup for advanced service performance
 
 You can build dashboards and panels to visualize trace counts, durations, and error rates. For full SPM, consider adding Prometheus and OpenTelemetry metrics.
 
+## Redacting Sensitive Data with the OpenTelemetry Collector [⬆️](#table-of-contents)
+
+As your business scales, telemetry data may include sensitive information (e.g., credit card numbers, emails, secrets).
+The OpenTelemetry Collector provides processors to redact or mask sensitive data before exporting:
+- **Attributes processor**: Update, delete, or hash specific attributes (e.g., remove `user.email`, hash `client.ip_address`).
+- **Redaction processor**: Allowlist permitted attributes, mask values matching patterns (e.g., credit card numbers).
+- **Transform processor**: Use OTTL to redact, replace, or hash sensitive data in spans, logs, or metrics.
+
+Example of Attributes processor:
+
+```yaml
+processors:
+  attributes/update:
+    actions:
+      - key: payment.card_number
+        action: delete
+      - key: user.email
+        action: delete
+      - key: app_secret
+        value: [REDACTED]
+        action: update
+      - key: client.ip_address
+        action: hash
+```
+
+Best practice: Filter sensitive data as early as possible in your observability pipeline.
+
+[Read the full guide @ Better Stack](https://betterstack.com/community/guides/observability/redacting-sensitive-data-opentelemetry/)
 
 ## 📽️ Running the Slidev Presentation [⬆️](#table-of-contents)
 
