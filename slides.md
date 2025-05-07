@@ -199,7 +199,7 @@ notes: |
 - Build dashboards and panels to visualize trace counts, durations, and error rates.
 - For full SPM, consider adding Prometheus and OpenTelemetry metrics.
 
-![grafana monitoring](https://github.com/user-attachments/assets/4834aa1d-5ee4-4fc6-9e0b-43c82f87485f)
+![grafana monitoring](https://github.com/user-attachments/assets/7f0f7e1c-1df1-41f5-bde6-1065900b60c2)
 
 <!--
 notes: |
