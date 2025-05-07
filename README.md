@@ -111,6 +111,7 @@ pip install -r requirements.txt
 
 ### 1. Prepare Environment and Clone
 ```bash
+# create new python environment
 python3 -m venv env-vm-performance
 source bin/activate
 
