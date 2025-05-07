@@ -11,6 +11,7 @@ This project is a Django + Channels web application that provides a real-time, b
 - **Distributed Tracing**: OpenTelemetry spans for HTTP, WebSocket, Celery, and Redis operations.
 - **Service Performance Monitoring**: Grafana as dashboard to showcase the Performance Monitoring from OpenTelemetry (Jaeger).
 - **Automatic Local Setup**: `docker-compose up --build` starts Uvicorn, Celery worker, Celery beat, Redis, OpenTelemetry Collector, Jaeger, Grafana (via Docker) with logs saved to `.log` files.
+- **Slidev**: Live presentation for OpenTelemetry and project observability (see `slides.md` for details and usage).
 
 ### Preview
 
@@ -313,6 +314,24 @@ A Redis span in your traces will include:
   All cache operations and direct Redis usage are automatically traced and enriched.
 - **You can view these spans in your OpenTelemetry backend or the collector logs.**
 
+## Service Performance Monitoring with Grafana
+
+Grafana is included in the Docker Compose setup for advanced service performance monitoring and trace analysis.
+
+- **Access Grafana:** [http://localhost:3000/](http://localhost:3000/) (default user: `admin`, password: `admin`)
+- **Add Jaeger as a data source:**
+  1. Go to **Settings** → **Data Sources** → **Add data source**
+  2. Search for **Jaeger** and select it
+  3. Set the **URL** to `http://jaeger:16686`
+  4. Click **Save & Test**
+- **Explore traces:**
+  - Go to **Explore** in Grafana
+  - Select the **Jaeger** data source
+  - Search, filter, and analyze traces for your Django, WebSocket, Celery, and Redis operations
+
+You can build dashboards and panels to visualize trace counts, durations, and error rates. For full SPM, consider adding Prometheus and OpenTelemetry metrics.
+
+
 ## 📽️ Running the Slidev Presentation
 
 This project includes a Slidev presentation (`slides.md`) to help you understand and demo the OpenTelemetry integration.
@@ -358,20 +377,3 @@ slidev
 ```
 
 This will open an interactive presentation in your browser using the `slides.md` file.
-
-## Service Performance Monitoring with Grafana
-
-Grafana is included in the Docker Compose setup for advanced service performance monitoring and trace analysis.
-
-- **Access Grafana:** [http://localhost:3000/](http://localhost:3000/) (default user: `admin`, password: `admin`)
-- **Add Jaeger as a data source:**
-  1. Go to **Settings** → **Data Sources** → **Add data source**
-  2. Search for **Jaeger** and select it
-  3. Set the **URL** to `http://jaeger:16686`
-  4. Click **Save & Test**
-- **Explore traces:**
-  - Go to **Explore** in Grafana
-  - Select the **Jaeger** data source
-  - Search, filter, and analyze traces for your Django, WebSocket, Celery, and Redis operations
-
-You can build dashboards and panels to visualize trace counts, durations, and error rates. For full SPM, consider adding Prometheus and OpenTelemetry metrics.

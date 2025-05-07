@@ -1,4 +1,4 @@
-# Effortless Django Logging: OpenTelemetry Will Blow Your Mind!
+# Effortless Django Observability: OpenTelemetry, Jaeger, and Grafana
 
 ---
 
@@ -7,16 +7,16 @@
 - Django apps are powerful, but:
   - Debugging across HTTP, WebSocket, Celery, and Redis is hard.
   - Traditional logging is fragmented and hard to correlate.
-  - Distributed systems need distributed tracing.
+  - Distributed systems need distributed tracing and service performance monitoring.
 
 ---
 
 ## The Solution
 
-**OpenTelemetry**
+**OpenTelemetry + Jaeger + Grafana**
 - Open standard for distributed tracing and metrics.
 - Works with Django, Celery, Redis, and more.
-- Visualize traces in Jaeger, Tempo, Honeycomb, etc.
+- Visualize traces in Jaeger, build dashboards in Grafana.
 
 ---
 
@@ -29,37 +29,36 @@
   - WebSocket events
   - Celery tasks
   - Redis/cache operations
+- Service Performance Monitoring with Grafana dashboards
 
 ---
 
 ## How Easy Is It?
 
-### 1. Install a few packages
+### 1. Clone and Run with Docker Compose
 
 ```bash
-pip install django opentelemetry-api opentelemetry-sdk \
-  opentelemetry-instrumentation-django opentelemetry-instrumentation-redis \
-  opentelemetry-instrumentation-celery django-redis
+git clone <repo-url>
+cd django-vm-websocket
+docker-compose up --build
 ```
 
 ---
 
-### 2. Add a few lines to settings.py
+### 2. Access the Stack
 
-```python
-if os.getenv("ENABLE_OTEL", "0") == "1":
-    # ... OpenTelemetry setup ...
-    from terminal.otel_redis import setup_redis_otel
-    setup_redis_otel(provider)
-```
+- Django app: [http://localhost:8000/](http://localhost:8000/)
+- Jaeger UI: [http://localhost:16686/](http://localhost:16686/)
+- Grafana UI: [http://localhost:3000/](http://localhost:3000/) (admin/admin)
 
 ---
 
-### 3. Run the OpenTelemetry Collector
+### 3. Add Jaeger as a Data Source in Grafana
 
-```bash
-docker run --rm -p 4318:4318 otel/opentelemetry-collector:latest
-```
+1. Go to **Settings** → **Data Sources** → **Add data source**
+2. Search for **Jaeger** and select it
+3. Set the **URL** to `http://jaeger:16686`
+4. Click **Save & Test**
 
 ---
 
@@ -69,10 +68,11 @@ docker run --rm -p 4318:4318 otel/opentelemetry-collector:latest
 - **Rich context**: function, file, line, arguments, and even business context.
 - **No manual context management** for cache or Redis.
 - **Error handling**: Tracing never breaks your app.
+- **Dashboards**: Visualize trace counts, durations, and error rates in Grafana.
 
 ---
 
-## Example Trace
+## Example Trace in Jaeger
 
 - See every request, WebSocket event, Celery task, and Redis command in a single trace.
 - Drill down to see:
@@ -80,7 +80,16 @@ docker run --rm -p 4318:4318 otel/opentelemetry-collector:latest
   - Arguments, return values, and errors
   - End-to-end latency and bottlenecks
 
-![image](https://github.com/user-attachments/assets/bb825cc3-f992-4d79-a29e-a96390ca32e1)
+![jaeger UI](https://github.com/user-attachments/assets/6cb44bb9-88e6-44e9-bf8b-c3afa4ccfe96)
+
+---
+
+## Example Dashboard in Grafana
+
+- Build dashboards and panels to visualize trace counts, durations, and error rates.
+- For full SPM, consider adding Prometheus and OpenTelemetry metrics.
+
+![grafana monitoring](https://github.com/user-attachments/assets/f4bd9c02-588e-407e-96dc-d1784f6ccc5b)
 
 ---
 
@@ -88,7 +97,10 @@ docker run --rm -p 4318:4318 otel/opentelemetry-collector:latest
 
 - Add your own attributes/events to spans (e.g., user ID, business context)
 - Monkey-patch cache methods for global enrichment
-- All logic in one place: `terminal/otel_redis.py`
+- All Redis enrichment logic in: `terminal/otel_redis.py`
+- General function/class tracing in: `terminal/otel_tracing.py`
+- HTTP and WebSocket context propagation in: `terminal/otel_http_middleware.py` and `terminal/otel_websocket_middleware.py`
+- Custom attributes and events appear in Jaeger trace details and can be used for filtering, search, and Grafana dashboards.
 
 ---
 
@@ -97,20 +109,21 @@ docker run --rm -p 4318:4318 otel/opentelemetry-collector:latest
 - No more scattered logs
 - No more guessing where the bottleneck is
 - One trace, full story
+- One dashboard, full performance view
 
 ---
 
 ## Try It Yourself!
 
 - Clone the repo
-- Run `./run-local.sh` and the collector
-- Open your browser, interact, and watch the traces flow
+- Run `docker-compose up --build`
+- Open your browser, interact, and watch the traces flow in Jaeger and Grafana
 
 ---
 
 ## Q&A
 
-- Ask me anything about Django, OpenTelemetry, or real-world observability!
+- Ask me anything about Django, OpenTelemetry, Jaeger, Grafana, or real-world observability!
 
 ---
 
