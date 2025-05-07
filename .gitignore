@@ -50,3 +50,7 @@ celery-worker.log
 celery-beat.log
 celerybeat-schedule
 celerybeat-schedule.db
+
+# Slidev Presentation
+*.lock
+node_modules/

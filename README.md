@@ -324,3 +324,49 @@ A Redis span in your traces will include:
 - **No manual context management is needed.**  
   All cache operations and direct Redis usage are automatically traced and enriched.
 - **You can view these spans in your OpenTelemetry backend or the collector logs.**
+
+## 📽️ Running the Slidev Presentation
+
+This project includes a Slidev presentation (`slides.md`) to help you understand and demo the OpenTelemetry integration.
+
+### 1. Install Slidev
+
+**Locally (recommended):**
+
+```bash
+npm install --save-dev @slidev/cli
+```
+
+Or with yarn:
+
+```bash
+yarn add -D @slidev/cli
+```
+
+**Globally (optional):**
+
+```bash
+npm install -g @slidev/cli
+```
+
+### 2. Run the Presentation
+
+If installed locally:
+
+```bash
+npx slidev
+```
+
+Or with yarn:
+
+```bash
+yarn slidev
+```
+
+If installed globally:
+
+```bash
+slidev
+```
+
+This will open an interactive presentation in your browser using the `slides.md` file.
