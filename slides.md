@@ -97,7 +97,7 @@ notes: |
 
 ---
 
-![otel collector](https://github.com/user-attachments/assets/bb825cc3-f992-4d79-a29e-a96390ca32e1)
+![otel collector](.img/2-otel-collector.png)
 
 ---
 
@@ -180,7 +180,7 @@ notes: |
   - Arguments, return values, and errors
   - End-to-end latency and bottlenecks
 
-![Jaeger UI 1](https://github.com/user-attachments/assets/6cb44bb9-88e6-44e9-bf8b-c3afa4ccfe96)
+![Jaeger UI 1](.img/3-jaeger-ui-1.png)
 
 <!--
 notes: |
@@ -190,7 +190,7 @@ notes: |
 
 ---
 
-![Jaeger UI 2](https://github.com/user-attachments/assets/9a622a6e-fdb1-4b21-9d73-ee11a67ccfcf)
+![Jaeger UI 2](.img/4-jaeger-ui-2.png)
 
 ---
 
@@ -199,7 +199,7 @@ notes: |
 - Build dashboards and panels to visualize trace counts, durations, and error rates.
 - For full SPM, consider adding Prometheus and OpenTelemetry metrics.
 
-![grafana monitoring](https://github.com/user-attachments/assets/7f0f7e1c-1df1-41f5-bde6-1065900b60c2)
+![grafana monitoring](.img/5-grafana-monitoring.png)
 
 <!--
 notes: |
