@@ -19,10 +19,11 @@ This project is a Django + Channels web application that provides a real-time, b
 
 ![otel collector](https://github.com/user-attachments/assets/bb825cc3-f992-4d79-a29e-a96390ca32e1)
 
-![jaeger UI](https://github.com/user-attachments/assets/6cb44bb9-88e6-44e9-bf8b-c3afa4ccfe96)
+![Jaeger UI 1](https://github.com/user-attachments/assets/6cb44bb9-88e6-44e9-bf8b-c3afa4ccfe96)
 
-![grafana monitoring](https://github.com/user-attachments/assets/f4bd9c02-588e-407e-96dc-d1784f6ccc5b)
+![Jaeger UI 2](https://github.com/user-attachments/assets/9a622a6e-fdb1-4b21-9d73-ee11a67ccfcf)
 
+![grafana monitoring](https://github.com/user-attachments/assets/4834aa1d-5ee4-4fc6-9e0b-43c82f87485f)
 
 ## Project Structure
 ```
