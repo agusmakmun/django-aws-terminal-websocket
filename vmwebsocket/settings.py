@@ -126,11 +126,19 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Redis cache
+REDIS_HOST = os.environ.get("REDIS_HOST", "localhost")
+REDIS_PORT = os.environ.get("REDIS_PORT", "6379")
+REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
+
+# Celery configuration
+CELERY_BROKER_URL = REDIS_URL
+CELERY_RESULT_BACKEND = REDIS_URL
+
+# Django cache configuration (if using django-redis)
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://localhost:6379/1",
+        "LOCATION": REDIS_URL,
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
@@ -138,8 +146,8 @@ CACHES = {
 }
 
 # Health check URL for Celery task
-HEALTH_CHECK_URL = "http://localhost:8000/health-check/"
-CELERY_BROKER_URL = "redis://localhost:6379/0"
+DJANGO_HOST = os.environ.get("DJANGO_HOST", "django")
+HEALTH_CHECK_URL = f"http://{DJANGO_HOST}:8000/health-check/"
 
 # Celery Beat schedule for periodic tasks
 CELERY_BEAT_SCHEDULE = {

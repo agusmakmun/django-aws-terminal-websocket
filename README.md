@@ -1,6 +1,6 @@
 # Django EC2 WebSocket Terminal
 
-This project is a Django + Channels web application that delivers a real-time, browser-based terminal using WebSockets and [xterm.js](https://xtermjs.org/). It streams interactive shell sessions—such as SSH to an EC2 instance—directly to the frontend, with full OpenTelemetry observability for HTTP, WebSocket, Celery, and Redis operations.
+This project is a Django + Channels web application that provides a real-time, browser-based terminal using WebSockets and [xterm.js](https://xtermjs.org/). It streams interactive shell sessions—such as SSH to an EC2 instance—directly to the frontend. The stack features full distributed tracing and service performance monitoring with OpenTelemetry, Jaeger, and Grafana, covering HTTP, WebSocket, Celery, and Redis operations.
 
 ## Features
 - **Django + Channels**: Uses Django Channels for WebSocket support.
@@ -9,7 +9,8 @@ This project is a Django + Channels web application that delivers a real-time, b
 - **Simple Django Template**: Uses a minimal HTML template for easy customization.
 - **Health Check API**: `/health-check/` endpoint for monitoring and periodic Celery checks.
 - **Distributed Tracing**: OpenTelemetry spans for HTTP, WebSocket, Celery, and Redis operations.
-- **Automatic Local Setup**: `run-local.sh` starts Uvicorn, Celery worker, Celery beat, and Redis (via Docker) with logs saved to `.log` files.
+- **Service Performance Monitoring**: Grafana as dashboard to showcase the Performance Monitoring from OpenTelemetry (Jaeger).
+- **Automatic Local Setup**: `docker-compose up --build` starts Uvicorn, Celery worker, Celery beat, Redis, OpenTelemetry Collector, Jaeger, Grafana (via Docker) with logs saved to `.log` files.
 
 ### Preview
 
@@ -23,7 +24,8 @@ This project is a Django + Channels web application that delivers a real-time, b
 django-vm-websocket/
 ├── manage.py
 ├── requirements.txt
-├── run-local.sh
+├── Dockerfile
+├── docker-compose.yml
 ├── README.md
 ├── vmwebsocket/
 │   ├── __init__.py
@@ -47,6 +49,12 @@ django-vm-websocket/
 │       └── terminal/
 │           └── terminal.html
 └── db.sqlite3
+
+# Services run via Docker Compose:
+#   - django (web, worker, beat)
+#   - redis (cache & broker)
+#   - jaeger (tracing backend & UI)
+#   - grafana (service performance monitoring UI)
 ```
 
 ## Setup Instructions
@@ -63,29 +71,32 @@ source ../env-vm-performance/bin/activate
 ```bash
 pip install -r requirements.txt
 ```
+_(*for local debug only, Docker Compose is recommended for full stack)_
 
-### 3. Run Migrations
+### 3. Run Everything Locally with Docker (Recommended)
+
+You can run the entire stack (Django, Celery worker, Celery beat, Redis, Jaeger and Grafana) with a single command using Docker Compose:
+
 ```bash
-python manage.py migrate
+docker-compose up --build
 ```
 
-### 4. Run Everything Locally (Recommended)
+- The Django app will be available at: [http://localhost:8000/](http://localhost:8000/)
+- The Jaeger UI will be available at: [http://localhost:16686/](http://localhost:16686/)
+- Grafana UI will be available at: [http://localhost:3000/](http://localhost:3000/)
+- Redis will be available on port 6379 (internal networking)
 
-Open **two terminals**:
+To stop all services, press `Ctrl+C` in the terminal running Docker Compose.
 
-- **Terminal 1:**
-  ```bash
-  docker run --rm -p 4318:4318 otel/opentelemetry-collector:latest
-  ```
-  This starts the OpenTelemetry Collector to receive and forward traces.
+If you make code changes, you may need to rebuild:
+```bash
+docker-compose up --build
+```
 
-- **Terminal 2:**
-  ```bash
-  ./run-local.sh
-  ```
-  This script starts Uvicorn (Django ASGI), Celery worker, Celery beat, and a Redis container (named `local-redis`) via Docker if not already running.
-  Logs are saved to `uvicorn.log`, `celery-worker.log`, and `celery-beat.log` (all ignored by git).
-  Press Ctrl+C to stop all services. The Redis container will remain running unless you stop it with `docker stop local-redis`.
+You can also run individual services (e.g., just the worker):
+```bash
+docker-compose run --rm celery-worker
+```
 
 ### 5. Access the Terminal
 Open your browser and go to [http://localhost:8000/](http://localhost:8000/)
@@ -186,54 +197,27 @@ uvicorn vmwebsocket.asgi:application --host 0.0.0.0 --port 8000
 
 ## OpenTelemetry Tracing
 
-This project supports distributed tracing with [OpenTelemetry](https://opentelemetry.io/) for Django, Celery, and Redis. To enable tracing:
+This project supports distributed tracing with [OpenTelemetry](https://opentelemetry.io/) for Django, Celery, and Redis. Traces are exported to Jaeger (all-in-one) for visualization and analysis. For advanced service performance monitoring, Grafana is included and can be connected to Jaeger as a data source. Dashboards and SPM can be built in Grafana using Jaeger as a data source.
 
-1. Install the requirements:
+1. Install the requirements (for local debug only):
    ```bash
    pip install -r requirements.txt
    ```
-2. Set the following environment variables before starting your server:
+2. Set the following environment variables before starting your server (for local debug only):
    ```bash
    export ENABLE_OTEL=1
    export OTEL_SERVICE_NAME=django-vm-websocket  # or your preferred service name
-   export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318/v1/traces  # or your collector endpoint
+   export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318/v1/traces  # or your Jaeger endpoint
    ```
-3. Start the OpenTelemetry Collector locally using Docker:
+3. Run the stack with Docker Compose:
    ```bash
-   docker run --rm -p 4318:4318 otel/opentelemetry-collector:latest
+   docker-compose up --build
    ```
-   This will start the collector with a default configuration that accepts traces on port 4318.
-
-4. Start your Django server as usual (e.g., with `./run-local.sh` or `uvicorn`).
-
-Traces will be sent to the configured OTLP endpoint. You can use [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/) or a compatible backend (like Jaeger, Tempo, or Honeycomb) to receive and visualize traces.
+4. View traces in Jaeger UI ([http://localhost:16686/](http://localhost:16686/)) and analyze service performance in Grafana ([http://localhost:3000/](http://localhost:3000/)).
 
 ## Troubleshooting OpenTelemetry Collector Connection
 
-If you have issues connecting to the OpenTelemetry Collector at `http://localhost:4318/v1/traces`, follow these steps:
-
-1. **Collector is running, but curl GET fails:**
-   - `curl -v http://localhost:4318/v1/traces` will result in `Recv failure: Connection reset by peer`. This is **expected** because the endpoint only accepts POST requests with a specific payload.
-
-2. **Test with a POST request:**
-   - Run: `curl -X POST http://localhost:4318/v1/traces -d '{}'`
-   - If the collector is running and the OTLP HTTP receiver is enabled, you should get a response like `400 Bad Request` or `415 Unsupported Media Type`. If you still get `Recv failure: Connection reset by peer`, the collector is not accepting connections as expected.
-
-3. **Check the collector config is loaded:**
-   - Run: `docker run --rm -v $(pwd)/otel-collector-config.yaml:/etc/otelcol/config.yaml otel/opentelemetry-collector:latest cat /etc/otelcol/config.yaml`
-   - You should see the contents of your config file. If not, the volume mount is not working.
-
-4. **Try running the collector without your config:**
-   - Run: `docker run --rm -p 4318:4318 otel/opentelemetry-collector:latest`
-   - Then test with the POST request above. If you get a different error, the collector is working and the issue is with your config or volume mount.
-
-5. **Check for port conflicts:**
-   - Run: `lsof -i :4318` to make sure nothing else is using the port.
-
-6. **Try a different collector image version:**
-   - Run: `docker run --rm -p 4318:4318 -p 4317:4317 -v $(pwd)/otel-collector-config.yaml:/etc/otelcol/config.yaml otel/opentelemetry-collector:0.93.0`
-
-If you follow these steps and still have issues, check the logs from both the collector and your Django app for errors, and ensure your environment variables are set in the same shell as your Django process.
+_This section is only relevant if you are running a standalone OpenTelemetry Collector. For most users, Jaeger all-in-one via Docker Compose is sufficient and recommended._
 
 ## Class-Level Tracing with OpenTelemetry
 
@@ -370,3 +354,20 @@ slidev
 ```
 
 This will open an interactive presentation in your browser using the `slides.md` file.
+
+## Service Performance Monitoring with Grafana
+
+Grafana is included in the Docker Compose setup for advanced service performance monitoring and trace analysis.
+
+- **Access Grafana:** [http://localhost:3000/](http://localhost:3000/) (default user: `admin`, password: `admin`)
+- **Add Jaeger as a data source:**
+  1. Go to **Settings** → **Data Sources** → **Add data source**
+  2. Search for **Jaeger** and select it
+  3. Set the **URL** to `http://jaeger:16686`
+  4. Click **Save & Test**
+- **Explore traces:**
+  - Go to **Explore** in Grafana
+  - Select the **Jaeger** data source
+  - Search, filter, and analyze traces for your Django, WebSocket, Celery, and Redis operations
+
+You can build dashboards and panels to visualize trace counts, durations, and error rates. For full SPM, consider adding Prometheus and OpenTelemetry metrics.

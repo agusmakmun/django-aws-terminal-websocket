@@ -1,0 +1,75 @@
+services:
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    ports:
+      - "16686:16686" # Jaeger UI
+      - "4318:4318" # OTLP HTTP
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
+  django:
+    build: .
+    container_name: django-vm-websocket
+    command: sh -c "python manage.py migrate && uvicorn vmwebsocket.asgi:application --host 0.0.0.0 --port 8000"
+    environment:
+      - ENABLE_OTEL=1
+      - OTEL_SERVICE_NAME=django-vm-websocket
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4318/v1/traces
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    ports:
+      - "8000:8000"
+    depends_on:
+      - jaeger
+      - redis
+    volumes:
+      - .:/app
+    working_dir: /app
+
+  celery-worker:
+    build: .
+    command: celery -A vmwebsocket worker --loglevel=info
+    environment:
+      - ENABLE_OTEL=1
+      - OTEL_SERVICE_NAME=django-vm-websocket
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4318/v1/traces
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DJANGO_HOST=django
+    depends_on:
+      - redis
+      - django
+    volumes:
+      - .:/app
+    working_dir: /app
+
+  celery-beat:
+    build: .
+    command: celery -A vmwebsocket beat --loglevel=info
+    environment:
+      - ENABLE_OTEL=1
+      - OTEL_SERVICE_NAME=django-vm-websocket
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4318/v1/traces
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DJANGO_HOST=django
+    depends_on:
+      - redis
+      - django
+    volumes:
+      - .:/app
+    working_dir: /app
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    depends_on:
+      - jaeger
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
