@@ -109,12 +109,16 @@ pip install -r requirements.txt
 
 ## Setup Instructions [⬆️](#table-of-contents)
 
-### 1. Clone and Prepare Environment
+### 1. Prepare Environment and Clone
 ```bash
+python3 -m venv env-vm-performance
+source bin/activate
+
 # Clone the repository
+git clone git@github.com:agusmakmun/django-aws-terminal-websocket.git
+
 # cd into the project directory
-python3 -m venv ../env-vm-performance
-source ../env-vm-performance/bin/activate
+cd django-aws-terminal-websocket/
 ```
 
 ### 2. Install Requirements
