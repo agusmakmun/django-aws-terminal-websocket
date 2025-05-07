@@ -2,7 +2,25 @@
 
 This project is a Django + Channels web application that provides a real-time, browser-based terminal using WebSockets and [xterm.js](https://xtermjs.org/). It streams interactive shell sessions—such as SSH to an EC2 instance—directly to the frontend. The stack features full distributed tracing and service performance monitoring with OpenTelemetry, Jaeger, and Grafana, covering HTTP, WebSocket, Celery, and Redis operations.
 
-## Features
+## Table of Contents
+- [Features](#features)
+- [Project Structure](#project-structure)
+- [Setup Instructions](#setup-instructions)
+- [WebSocket & EC2 Streaming](#websocket--ec2-streaming)
+- [EC2 SSH Configuration](#ec2-ssh-configuration)
+- [Health Check API and Periodic Task](#health-check-api-and-periodic-task)
+- [Customization](#customization)
+- [Requirements](#requirements)
+- [Running with ASGI Servers](#running-with-asgi-servers)
+- [OpenTelemetry Tracing](#opentelemetry-tracing)
+- [Troubleshooting OpenTelemetry Collector Connection](#troubleshooting-opentelemetry-collector-connection)
+- [Class-Level Tracing with OpenTelemetry](#class-level-tracing-with-opentelemetry)
+- [Redis OpenTelemetry Tracing (Advanced)](#redis-opentelemetry-tracing-advanced)
+- [Service Performance Monitoring with Grafana](#service-performance-monitoring-with-grafana)
+- [📽️ Running the Slidev Presentation](#️-running-the-slidev-presentation)
+- [License](#license)
+
+## Features [⬆️](#table-of-contents)
 - **Django + Channels**: Uses Django Channels for WebSocket support.
 - **EC2 Integration**: Ready for backend logic to stream terminal output from an AWS EC2 instance (via SSH, to be implemented in `TerminalConsumer`).
 - **xterm.js Frontend**: Presents a fully interactive terminal in the browser using xterm.js.
@@ -26,7 +44,7 @@ This project is a Django + Channels web application that provides a real-time, b
 ![grafana monitoring](.img/5-grafana-monitoring.png)
 
 
-## Project Structure
+## Project Structure [⬆️](#table-of-contents)
 ```
 django-vm-websocket/
 ├── manage.py
@@ -64,7 +82,7 @@ django-vm-websocket/
 #   - grafana (service performance monitoring UI)
 ```
 
-## Setup Instructions
+## Setup Instructions [⬆️](#table-of-contents)
 
 ### 1. Clone and Prepare Environment
 ```bash
@@ -110,13 +128,13 @@ Open your browser and go to [http://localhost:8000/](http://localhost:8000/)
 
 You should see a terminal interface powered by xterm.js. Typing in the terminal will echo your input (for now).
 
-## WebSocket & EC2 Streaming
+## WebSocket & EC2 Streaming [⬆️](#table-of-contents)
 - The WebSocket endpoint is at `/ws/terminal/`.
 - The backend logic for streaming an actual EC2 shell session is in `terminal/consumers.py` (`TerminalConsumer`).
 - All async methods in `TerminalConsumer` are traced with `@traced_async_class` for full observability.
 - You can use `boto3` and `asyncssh` (or similar) to connect to EC2 and stream the shell output.
 
-## EC2 SSH Configuration
+## EC2 SSH Configuration [⬆️](#table-of-contents)
 
 To enable the backend to connect to your AWS EC2 instance via SSH, set the following:
 
@@ -142,7 +160,7 @@ To enable the backend to connect to your AWS EC2 instance via SSH, set the follo
 
 - The backend will use these settings to establish an SSH connection to your EC2 instance for the WebSocket terminal.
 
-## Health Check API and Periodic Task
+## Health Check API and Periodic Task [⬆️](#table-of-contents)
 
 - **Health Check API:**
   - Endpoint: `/health-check/`
@@ -160,11 +178,11 @@ To enable the backend to connect to your AWS EC2 instance via SSH, set the follo
   - The task is traced with OpenTelemetry: you will see both a Celery task span and a nested span for the function logic (via `@traced_function`).
   - You can view logs in `celery-worker.log` and `celery-beat.log`.
 
-## Customization
+## Customization [⬆️](#table-of-contents)
 - **Frontend**: Edit `terminal/templates/terminal/terminal.html` to customize the look or add features.
 - **Backend**: Extend `TerminalConsumer` to handle authentication, EC2 connection, and streaming.
 
-## Requirements
+## Requirements [⬆️](#table-of-contents)
 
 The following Python packages are required for full functionality:
 
@@ -189,10 +207,7 @@ Install all dependencies with:
 pip install -r requirements.txt
 ```
 
-## License
-This project is licensed under the [MIT License](LICENSE).
-
-## Running with ASGI Servers
+## Running with ASGI Servers [⬆️](#table-of-contents)
 
 This project requires an ASGI server to support WebSockets. You can use either Daphne or Uvicorn:
 
@@ -202,7 +217,7 @@ uvicorn vmwebsocket.asgi:application --host 0.0.0.0 --port 8000
 ```
 **Note:** Do not use `python manage.py runserver` for WebSocket support.
 
-## OpenTelemetry Tracing
+## OpenTelemetry Tracing [⬆️](#table-of-contents)
 
 This project supports distributed tracing with [OpenTelemetry](https://opentelemetry.io/) for Django, Celery, and Redis. Traces are exported to Jaeger (all-in-one) for visualization and analysis. For advanced service performance monitoring, Grafana is included and can be connected to Jaeger as a data source. Dashboards and SPM can be built in Grafana using Jaeger as a data source.
 
@@ -222,11 +237,11 @@ This project supports distributed tracing with [OpenTelemetry](https://opentelem
    ```
 4. View traces in Jaeger UI ([http://localhost:16686/](http://localhost:16686/)) and analyze service performance in Grafana ([http://localhost:3000/](http://localhost:3000/)).
 
-## Troubleshooting OpenTelemetry Collector Connection
+## Troubleshooting OpenTelemetry Collector Connection [⬆️](#table-of-contents)
 
 _This section is only relevant if you are running a standalone OpenTelemetry Collector. For most users, Jaeger all-in-one via Docker Compose is sufficient and recommended._
 
-## Class-Level Tracing with OpenTelemetry
+## Class-Level Tracing with OpenTelemetry [⬆️](#table-of-contents)
 
 This project provides decorators to automatically trace all methods in a class:
 
@@ -266,7 +281,7 @@ class MyAsyncClass:
 
 See `terminal/otel_tracing.py` for full details and docstrings.
 
-## Redis OpenTelemetry Tracing (Advanced)
+## Redis OpenTelemetry Tracing (Advanced) [⬆️](#table-of-contents)
 
 This project provides **comprehensive OpenTelemetry tracing for all Redis operations**, including both direct Redis usage and Django cache operations.
 
@@ -316,7 +331,7 @@ A Redis span in your traces will include:
   All cache operations and direct Redis usage are automatically traced and enriched.
 - **You can view these spans in your OpenTelemetry backend or the collector logs.**
 
-## Service Performance Monitoring with Grafana
+## Service Performance Monitoring with Grafana [⬆️](#table-of-contents)
 
 Grafana is included in the Docker Compose setup for advanced service performance monitoring and trace analysis.
 
@@ -334,7 +349,7 @@ Grafana is included in the Docker Compose setup for advanced service performance
 You can build dashboards and panels to visualize trace counts, durations, and error rates. For full SPM, consider adding Prometheus and OpenTelemetry metrics.
 
 
-## 📽️ Running the Slidev Presentation
+## 📽️ Running the Slidev Presentation [⬆️](#table-of-contents)
 
 This project includes a Slidev presentation (`slides.md`) to help you understand and demo the OpenTelemetry integration.
 
@@ -379,3 +394,8 @@ slidev
 ```
 
 This will open an interactive presentation in your browser using the `slides.md` file.
+
+
+## License [⬆️](#table-of-contents)
+
+This project is licensed under the [MIT License](LICENSE).
