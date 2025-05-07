@@ -147,7 +147,7 @@ To enable the backend to connect to your AWS EC2 instance via SSH, set the follo
 - **Health Check API:**
   - Endpoint: `/health-check/`
   - Method: `GET`
-  - Response: `{ "status": "ok" }`
+  - Response: `{ "status": "ok", "cache_value": "pong" }`
   - Use this endpoint to verify the service is running (for load balancers, monitoring, etc).
   - Example:
     ```bash
