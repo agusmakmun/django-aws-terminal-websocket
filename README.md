@@ -188,7 +188,7 @@ pip install -r requirements.txt
 ```
 
 ## License
-MIT or your preferred license.
+This project is licensed under the [MIT License](LICENSE).
 
 ## Running with ASGI Servers
 
