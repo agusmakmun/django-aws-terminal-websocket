@@ -109,7 +109,7 @@ notes: |
 
 ```bash
 git clone git@github.com:agusmakmun/django-aws-terminal-websocket.git
-cd django-vm-websocket
+cd django-aws-terminal-websocket
 docker-compose up --build
 ```
 

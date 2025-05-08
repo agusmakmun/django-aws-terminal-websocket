@@ -168,7 +168,10 @@ if os.getenv("ENABLE_OTEL", "0") == "1":
 
     resource = Resource.create(
         {
-            "service.name": os.getenv("OTEL_SERVICE_NAME", "django-vm-websocket"),
+            "service.name": os.getenv(
+                "OTEL_SERVICE_NAME",
+                "django-aws-terminal-websocket",
+            ),
         }
     )
     provider = TracerProvider(resource=resource)

@@ -47,7 +47,7 @@ This project is a Django + Channels web application that provides a real-time, b
 
 ## Project Structure [⬆️](#table-of-contents)
 ```
-django-vm-websocket/
+django-aws-terminal-websocket/
 ├── manage.py
 ├── requirements.txt
 ├── Dockerfile
@@ -234,7 +234,7 @@ This project supports distributed tracing with [OpenTelemetry](https://opentelem
 2. Set the following environment variables before starting your server (for local debug only):
    ```bash
    export ENABLE_OTEL=1
-   export OTEL_SERVICE_NAME=django-vm-websocket  # or your preferred service name
+   export OTEL_SERVICE_NAME=django-aws-terminal-websocket  # or your preferred service name
    export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318/v1/traces  # or your Jaeger endpoint
    ```
 3. Run the stack with Docker Compose:
@@ -319,7 +319,7 @@ This project provides **comprehensive OpenTelemetry tracing for all Redis operat
 A Redis span in your traces will include:
 - `db.system: redis`
 - `db.statement: SET ? ? ? ?`
-- `custom.global_redis_tag: django-vm-websocket`
+- `custom.global_redis_tag: django-aws-terminal-websocket`
 - `custom.redis.caller_function: health_check_view`
 - `custom.redis.caller_file: /path/to/views.py`
 - `custom.redis.caller_line: 15`

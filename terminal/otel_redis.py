@@ -42,7 +42,10 @@ class CustomRedisSpanProcessor(SpanProcessor):
         """
         if span.attributes.get("db.system") == "redis":
             try:
-                span.set_attribute("custom.global_redis_tag", "django-vm-websocket")
+                span.set_attribute(
+                    "custom.global_redis_tag",
+                    "django-aws-terminal-websocket",
+                )
                 statement = span.attributes.get("db.statement")
                 args_length = span.attributes.get("db.redis.args_length")
                 key = span.attributes.get("db.redis.key", "unknown")
